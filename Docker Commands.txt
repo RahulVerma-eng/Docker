@@ -1,0 +1,105 @@
+-- Run - start a container
+docker run ngnix
+
+-- list containers
+docker ps
+- to list all containers
+docker ps -a
+
+-- Stop container
+docker stop <container-name>
+
+-- Remove container
+docker rm <container name / id>
+
+-- List docker images
+docker images
+
+-- remove docker image
+docker rmi <image-name>
+
+-- only pull image 
+docker pull <image-name>
+
+-- append a command with docker run
+docker run ubuntu sleep 5
+
+-- execute a command in running container
+docker exec <container-name> cat /etc/hosts
+
+-- by default container run in attached mode 
+docker run docker/welcome-to-docker
+
+-- run container in detach mode (means will run in background mode and you will be prompted to console again)
+docker run -d docker/welcome-to-docker
+
+-- to attach again to docker container
+docker attach <container-id>
+
+-- run image with tag (if not mentioned it consider tag as 'latest')
+docker run redis:4.0
+
+-- by default docker container run in non interactive mode, to run container in interactive mode use -i
+docker run -i <image>
+
+-- and if you need the terminal access for some cmd line input use -t
+docker run -it <image>
+
+-- port mapping (application running in docker container at port 5000 will now be able to accessed on your localhost at port 80)
+docker run -p 80:5000 <image>
+
+-- volume mapping (if you need persistent data then map your container data to your storage space)
+docker run -v /opt/localstorage:/var/lib/MySQL mysql
+
+-- inspect container (get all details of container in a json format)
+docker inspect <containerid/name>
+
+-- get logs of container
+docker logs <containerid/name>
+
+
+-- Writing a Docker file
+start with "FROM" specifying base-image
+then "RUN" command to run specific commands or install required dependencies.
+then "COPY" to copy the source code to a specific folder in a new image from your local repo
+then "ENTRYPOINT" specify entrypoint to start the container with specific commands 
+
+Example =>>>
+
+FROM ubuntu
+RUN apt-get update && apt-get -y install python
+RUN pip install flask flask-mysql
+COPY . /opt/source-code
+ENTRYPOINT FLASK_APP=/opt/source-code/app.py flask run
+
+-- To push docker image
+docker push <image>
+
+-- to login dockerhub
+docker login
+
+-- to logout
+docker logout
+
+-- CMD in Dockerfile usage (we can also pass commands while running docker eg- docker run ubuntu sleep 5)
+FROM Ubuntu
+CMD sleep 5
+
+-- for ENTRYPOINT in Dockerfile usage
+FROM Ubuntu
+ENTRYPOINT ["sleep"]
+
+docker run ubuntu 10
+
+-- So the difference in CMD and ENTRYPOINT is that cmd commands run completely (the command or command line parameter) and ENTRPOINT command append the command line parameter provided "sleep 10"
+
+-- Some case for the CMD and ENTRYPOINT
+FROM Ubuntu
+ENTRYPOINT ["sleep"]
+CMD ["5"]
+> command at start up : sleep 5
+docker run <image> 10
+> command at start up : sleep 10
+docker run --entrypoint newsleep <image> 10
+> command at start up : newsleep 10
+
